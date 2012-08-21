@@ -19,7 +19,7 @@ pacman -S --noconfirm --needed sudo git wget curl checkinstall libxml2 libxslt s
 
 ## Add ruby exec to PATH ##
 
-echo "export PATH=/root/.gem/ruby/1.9.1/bin:$PATH" >> /root/.bashrc
+echo "export PATH=/root/.gem/ruby/1.9.1/bin:$PATH" >> /root/.bash_profile
 source /root/.bashrc
 
 #######################################
@@ -59,10 +59,11 @@ rm -rf /tmp/gitolite-admin
 ##################################################################
 
 ## Add ruby exec to PATH ##
-sudo -u gitlab -H sh -c 'echo "export PATH=/home/gitlab/.gem/ruby/1.9.1/bin:$PATH" >> /home/gitlab/.bashrc'
-source /home/gitlab/.bashrc
+sudo -u gitlab -H sh -c 'echo "export PATH=/home/gitlab/.gem/ruby/1.9.1/bin:$PATH" >> /home/gitlab/.bash_profile'
+#source /home/gitlab/.bashrc
 
 sudo -u gitlab -H gem install bundler
+sudo -u gitlab -H sh -c 'echo "export PATH=/home/gitlab/.gem/ruby/1.9.1/gems/bundler-1.1.5/bin/:$PATH" >> /home/gitlab/.bash_profile'
 cd /home/gitlab
 sudo -H -u gitlab git clone -b stable git://github.com/gitlabhq/gitlabhq.git gitlab
 cd gitlab
@@ -111,10 +112,10 @@ rc.d start redis
 sudo -u gitlab bundle exec rake gitlab:app:setup RAILS_ENV=production
 
 ##### Default login/paddword #####
-# #
+#                                #
 # login.........admin@local.host #
-# password......5iveL!fe #
-# #
+# password......5iveL!fe         #
+#                                #
 ##################################
 
 #########################
