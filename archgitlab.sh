@@ -13,47 +13,35 @@ fi
 ## 1. Install prerequisites ##
 ##############################
 
-pacman -Syu --noconfirm --needed sudo base-devel zlib libyaml \
-openssl gdbm readline ncurses libffi curl git openssh redis \
-postfix checkinstall libxml2 libxslt icu python2 mysql ruby
+pacman -Syu --noconfirm --needed sudo base-devel zlib libyaml openssl gdbm readline ncurses libffi curl git openssh redis postfix checkinstall libxml2 libxslt icu python2 mysql ruby
 
 
-## Add ruby exec to PATH ##
+## Add ruby exec to PATH
 
 echo "export PATH=/root/.gem/ruby/1.9.1/bin:$PATH" >> /root/.bash_profile
 source /root/.bashrc
 
-#######################################
-## 2. Install and configure gitolite ##
-#######################################
+#####################################
+## 2. Create a git user for Gitlab ##
+#####################################
 
-## Add git and gitlab user ##
+useradd --create-home --comment 'GitLab' git
 
-useradd --user-group --shell /bin/sh --comment 'git version control' --create-home --system git
-useradd --user-group --shell /bin/bash --comment 'gitlab system' --create-home --groups git gitlab
+#####################
+## 3. GitLab shell ##
+#####################
 
-sudo -H -u gitlab ssh-keygen -q -N '' -t rsa -f /home/gitlab/.ssh/id_rsa
+# Login as git 
+su - git
 
-cd /home/git
-sudo -H -u git git clone git://github.com/gitlabhq/gitolite /home/git/gitolite
+# Clone gitlab shell
+git clone https://github.com/gitlabhq/gitlab-shell.git
 
-sudo -u git sh -c 'echo "export PATH=/home/git/bin:$PATH" >> /home/git/.bash_profile'
-sudo -u git -H sh -c "export PATH=/home/git/bin:$PATH; /home/git/gitolite/src/gl-system-install"
-sudo cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub
-sudo chmod 0444 /home/git/gitlab.pub
+# Setup
+cd gitlab-shell
+cp config.yml.example config.yml
+./bin/install 
 
-sudo -u git -H sed -i 's/0077/0007/g' /home/git/share/gitolite/conf/example.gitolite.rc
-sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; gl-setup -q /home/git/gitlab.pub"
-
-chmod -R g+rwX /home/git/repositories/
-chmod g+x /home/git # (thanks to http://howto.basjes.nl/linux/installing-gitlab-on-centos-6#section-11)
-chown -R git:git /home/git/repositories/
-
-cd
-sudo -u gitlab -H git clone git@localhost:gitolite-admin.git /tmp/gitolite-admin
-# Answer yes. At this point you should be able to clone the gitolite-admin repository. This step is vital to succeed. If not do not try to proceed further.
-
-rm -rf /tmp/gitolite-admin
 
 ##################################################################
 ## 3 Install and configure gitlab. Check status configuration. ##
