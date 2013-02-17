@@ -13,7 +13,9 @@ fi
 ## 1. Install prerequisites ##
 ##############################
 
-pacman -Syu --noconfirm --needed sudo base-devel zlib libyaml opesnssl gdbm readline ncurses libffi curl git openssh redis postfix checkinstall libxml2 libxslt icu python2 mysql ruby
+pacman -Syu --noconfirm --needed sudo base-devel zlib libyaml \
+openssl gdbm readline ncurses libffi curl git openssh redis \
+postfix checkinstall libxml2 libxslt icu python2 mysql ruby
 
 
 ## Add ruby exec to PATH ##

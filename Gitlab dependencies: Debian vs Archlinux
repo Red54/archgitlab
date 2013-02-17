@@ -17,6 +17,6 @@ postfix                 postfix         extra
 checkinstall            checkinstall    community
 libxml2-dev             libxml2         extra
 libxslt-dev             libxslt         extra
-libcurl4-openssl-dev    curl         core 
+libcurl4-openssl-dev    curl            core 
 libicu-dev              icu             extra
 python                  python2         extra
