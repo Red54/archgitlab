@@ -1,0 +1,22 @@
+Debian                  Archlinux       Repository
+--------------------------------------------------
+sudo                    sudo            core
+build-essential         base-devel      core
+zlib1g-dev              zlib            core
+libyaml-dev             libyaml         community
+libssl-dev              openssl         core
+libgdbm-dev             gdbm            core
+libreadline-dev         readline        core
+libncurses5-dev         ncurses         core
+libffi-dev              libffi          core
+curl                    curl            core
+git-core                git             extra
+openssh-server          openssh         core
+redis-server            redis           community
+postfix                 postfix         extra
+checkinstall            checkinstall    community
+libxml2-dev             libxml2         extra
+libxslt-dev             libxslt         extra
+libcurl4-openssl-dev    curl         core 
+libicu-dev              icu             extra
+python                  python2         extra
