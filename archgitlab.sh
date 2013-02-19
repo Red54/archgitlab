@@ -80,10 +80,7 @@ sudo -u git -H git checkout $BRANCH
 sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
 
 # Change "localhost" to the fully-qualified domain name 
-sed -i "s/ host: localhost/ host: $FQDN/" config/gitlab.yml
-sed -i "s/notify@localhost/notify@$FQDN/" config/gitlab.yml
-sed -i "s/support@localhost/support@$FQDN/" config/gitlab.yml
-    
+sed -i "s/localhost/$FQDN/g" config/gitlab.yml
 
 # Make sure GitLab can write to the log/ and tmp/ directories
 chown -R git log/
@@ -124,7 +121,7 @@ elif [[ $DB -eq 'postgresql' ]]; then
     sudo -u git cp config/database.yml.postgresql config/database.yml
     sed -i "s/gitlabhq_production/$DB_NAME/" config/database.yml
     sed -i "s/gitlab/$DB_GITLAB_USERNAME/" config/database.yml
-    sed -i "s/'password: '/'password: $DB_GITLAB_PASSWD'/" config/database.yml
+    sed -i 's/password:/password: $DB_GITLAB_PASSWD/' config/database.yml
     sudo -u git -H bundle install --deployment --without development test mysql
 fi
 
