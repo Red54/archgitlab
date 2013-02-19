@@ -13,28 +13,28 @@ fi
 ## Before running this script, make sure to fill in these variables ##
 ######################################################################
 
-# mysql or postgresql, default:mysql
-DB='mysql'
+# mysql or postgresql
+DB=mysql
 
-# database name, default:gitlabhq_production
-DB_NAME='gitlabhq_production' 
+# database name
+DB_NAME=gitlabhq_production
 
-DB_ROOT_PASSWD=''
-DB_GITLAB_PASSWD=''
+DB_ROOT_PASSWD=
+DB_GITLAB_PASSWD=
+DB_GITLAB_USERNAME=
 
 # Set branch to pull from
-BRANCH=''
+BRANCH=master
 
 # Fully-qualified domain name
-FQDN=''
+FQDN=
 
 
 ##############################
 ## 1. Install prerequisites ##
 ##############################
 
-pacman -Syu --noconfirm --needed sudo base-devel zlib libyaml openssl gdbm readline ncurses libffi curl git openssh redis postfix checkinstall libxml2 libxslt icu python2 mysql ruby
-
+pacman -Syu --noconfirm --needed sudo base-devel zlib libyaml openssl gdbm readline ncurses libffi curl git openssh redis postfix checkinstall libxml2 libxslt icu python2 ruby
 
 ## Add ruby exec to PATH
 
@@ -74,7 +74,7 @@ sudo -u git -H git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 cd gitlab/
    
 # Checkout to stable release
-# sudo -u git -H git checkout 5-0-stable
+sudo -u git -H git checkout $BRANCH
 
 # Copy the example GitLab config
 sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
@@ -109,16 +109,22 @@ systemctl start redis
 
 gem install charlock_holmes --version '0.6.9'
 
-if [[ $DB -eq 'mysql' ]]
-then
+if [[ $DB -eq 'mysql' ]]; then
+
+    pacman -S --needed --noconfirm mysql
     sudo -u git cp config/database.yml.mysql config/database.yml
-    sed -i '' config/database.yml
+    sed -i "s/gitlabhq_production/$DB_NAME/" config/database.yml
+    sed -i "s/root/$DB_GITLAB_USERNAME/" config/database.yml
+    sed -i "s/secure password/$DB_GITLAB_PASSWD/" config/database.yml
     sudo -u git -H bundle install --deployment --without development test postgres
     
-elif [[ $DB -eq 'postgresql' ]]
-then 
+elif [[ $DB -eq 'postgresql' ]]; then 
+
+    pacman -S --needed --noconfirm postgresql
     sudo -u git cp config/database.yml.postgresql config/database.yml
-    sed -i '' config/database.yml
+    sed -i "s/gitlabhq_production/$DB_NAME/" config/database.yml
+    sed -i "s/gitlab/$DB_GITLAB_USERNAME/" config/database.yml
+    sed -i "s/'password: '/'password: $DB_GITLAB_PASSWD'/" config/database.yml
     sudo -u git -H bundle install --deployment --without development test mysql
 fi
 
@@ -162,11 +168,12 @@ systemctl enable nginx
 echo "Done!"
 echo "Visit $FQDN for your first GitLab login."
 echo "The setup has created an admin account for you."
+echo "Please go over to your profile page and immediately change the password."
 echo "##################################"
 echo "## Email.....: admin@local.host ##"
 echo "## Password..: 5iveL!fe         ##"
 ehco "##################################"
-echo "Please go over to your profile page and immediately change the password."
+
 
 
 -------OLD GUIDE---------
