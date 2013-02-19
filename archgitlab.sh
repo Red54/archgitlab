@@ -42,15 +42,6 @@ echo "export PATH=/root/.gem/ruby/1.9.1/bin:$PATH" >> /root/.bash_profile
 source /root/.bashrc
 
 
-###########################
-## 2. Configure database ##
-###########################
-
-
-
-
-
-
 #####################################
 ## 3. Create a git user for Gitlab ##
 #####################################
