@@ -1,0 +1,22 @@
+# https://github.com/gitlabhq/gitlab-recipes/issues/14#issuecomment-9997442
+#
+# GITLAB
+# Maintainer: @axilleas
+# App Version: 5.0
+#
+
+[Unit]
+Description=Self Hosted Git Management
+Requires=mysql.service redis.service
+After=mysql.service redis.service
+Wants=postfix.service sidekiq.service
+
+[Service]
+Type=forking
+User=git
+WorkingDirectory=/home/git/gitlab
+ExecStart=/home/git/gitlab/script/rails server -d -e production
+PIDFile=/home/git/gitlab/tmp/pids/server.pid
+
+[Install]
+WantedBy=multi-user.target
