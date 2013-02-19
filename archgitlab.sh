@@ -107,7 +107,7 @@ systemctl start redis
 
 ## Configure GitLab DB settings / Install Gems
 
-if [ RUBY_DOC_ENABLED -eq False ]; then
+if [ RUBY_DOCS_ENABLED -eq False ]; then
 
     echo "gem: --no-rdoc --no-ri" >> /home/git/.gemrc
 
