@@ -13,6 +13,9 @@ fi
 ## Before running this script, make sure to fill in these variables ##
 ######################################################################
 
+# Enable or disable ruby docs installation
+RUBY_DOCS_ENABLED=False
+
 # mysql or postgresql
 DB=mysql
 
@@ -103,6 +106,12 @@ systemctl enable redis
 systemctl start redis
 
 ## Configure GitLab DB settings / Install Gems
+
+if [ RUBY_DOC_ENABLED -eq False ]; then
+
+    echo "gem: --no-rdoc --no-ri" >> /home/git/.gemrc
+
+fi
 
 gem install charlock_holmes --version '0.6.9'
 
