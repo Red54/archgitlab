@@ -37,7 +37,7 @@ FQDN=
 ## 1. Install prerequisites ##
 ##############################
 
-pacman -Syu --noconfirm --needed sudo base-devel zlib libyaml openssl gdbm readline ncurses libffi curl git openssh redis postfix checkinstall libxml2 libxslt icu python2 ruby
+pacman -Syu --noconfirm --needed sudo base-devel zlib libyaml openssl gdbm readline ncurses libffi curl git openssh redis postfix libxml2 libxslt icu python2 ruby
 
 ## Add ruby exec to PATH
 
@@ -64,6 +64,10 @@ git clone https://github.com/gitlabhq/gitlab-shell.git
 # Setup
 cd gitlab-shell
 cp config.yml.example config.yml
+
+# Change "localhost" to the fully-qualified domain name 
+sed -i "s/localhost/$FQDN/g" config.yml
+
 ./bin/install 
 
 exit
@@ -98,8 +102,8 @@ sudo -u git -H mkdir /home/git/gitlab-satellites
 sudo -u git -H mkdir tmp/pids/
 sudo chmod -R u+rwX  tmp/pids/
  
-# Copy the example Unicorn config
-sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+# Copy the example Puma config
+sudo -u git -H cp config/puma.rb.example config/puma.rb
 
 # Start redis server
 systemctl enable redis
@@ -113,7 +117,7 @@ if [ RUBY_DOCS_ENABLED -eq False ]; then
 
 fi
 
-gem install charlock_holmes --version '0.6.9'
+gem install charlock_holmes --version '0.6.9.4'
 
 if [[ $DB -eq 'mysql' ]]; then
 
@@ -179,31 +183,3 @@ echo "##################################"
 echo "## Email.....: admin@local.host ##"
 echo "## Password..: 5iveL!fe         ##"
 ehco "##################################"
-
-
-
--------OLD GUIDE---------
-
-
-## Add ruby exec to PATH ##
-sudo -u gitlab -H sh -c 'echo "export PATH=/home/gitlab/.gem/ruby/1.9.1/bin:$PATH" >> /home/gitlab/.bash_profile'
-#source /home/gitlab/.bashrc
-
-
-# Add python2.7 to ffi.rb (thanks to https://bbs.archlinux.org/viewtopic.php?pid=1143763#p1143763)
-sed -i "s/opts = {})/opts = {:python_exe => 'python2.7'})/g" /home/gitlab/gitlab/vendor/bundle/ruby/1.9.1/bundler/gems/pygments.rb-2cada028da50/lib/pygments/ffi.rb
-
-
-##################
-## 3.4 Setup DB ##
-##################
-
-rc.d start sudo -u gitlab bundle exec rake gitlab:app:setup RAILS_ENV=production
-
-
-#########################
-## 3.5 Checking status ##
-#########################
-
-
-
